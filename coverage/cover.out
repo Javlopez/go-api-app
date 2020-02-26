@@ -1,3 +1,16 @@
 mode: set
-go-lana/pkg/handlers/products.go:9.108,14.2 2 0
-go-lana/pkg/app/app.go:27.80,48.2 6 1
+go-lana/pkg/service/product.go:11.61,13.2 1 1
+go-lana/pkg/service/product.go:16.80,18.2 1 1
+go-lana/pkg/handlers/products.go:10.108,13.2 2 0
+go-lana/pkg/handlers/products.go:15.107,20.2 3 0
+go-lana/pkg/application/application.go:37.32,41.2 1 1
+go-lana/pkg/application/application.go:43.71,47.2 3 1
+go-lana/pkg/application/application.go:49.80,55.2 5 1
+go-lana/pkg/application/application.go:57.98,63.31 4 1
+go-lana/pkg/application/application.go:73.2,73.17 1 1
+go-lana/pkg/application/application.go:77.2,77.25 1 1
+go-lana/pkg/application/application.go:63.31,64.79 1 1
+go-lana/pkg/application/application.go:64.79,65.24 1 1
+go-lana/pkg/application/application.go:68.4,69.27 2 1
+go-lana/pkg/application/application.go:65.24,67.5 1 1
+go-lana/pkg/application/application.go:73.17,76.3 2 1

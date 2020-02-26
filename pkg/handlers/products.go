@@ -1,21 +1,23 @@
 package handlers
 
 import (
-	"fmt"
-	"go-lana/pkg/app"
+	app "go-lana/pkg/application"
 	"net/http"
 )
 
 //ProductsHandler method
 func ProductsHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) (int, interface{}) {
-
-	resp := struct {
-		Active string
-	}{Active: "Running"}
-
 	result, _ := a.Container.ProductService().GetAll()
+	return 200, result
+}
 
-	fmt.Printf("Loading data %+v", result)
+func ProductHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) (int, interface{}) {
 
-	return 200, resp
+	code := a.Params[0]
+	result, err := a.Container.ProductService().GetProductByCode(code)
+
+	if err != nil {
+		return http.StatusNotFound, struct{ Message string }{Message: err.Error()}
+	}
+	return http.StatusOK, result
 }
