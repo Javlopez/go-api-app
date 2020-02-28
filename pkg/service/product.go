@@ -12,7 +12,7 @@ func (p *ProductService) GetAll() ([]domain.Product, error) {
 	return p.ProductRepo.All()
 }
 
-//GetProductByCode
+//GetProductByCode method
 func (p *ProductService) GetProductByCode(code string) (domain.Product, error) {
 	return p.ProductRepo.GetProductByCode(code)
 }

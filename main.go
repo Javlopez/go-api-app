@@ -15,8 +15,10 @@ func main() {
 	app := application.New()
 	portNumber := fmt.Sprintf(":%s", port)
 
-	app.Handle("/products/([A-Z]+)$", handlers.ProductHandler)
-	app.Handle("/products/$", handlers.ProductsHandler)
+	app.Handle("/products/([A-Z]+)$", handlers.ProductHandler, "GET")
+	app.Handle("/products/$", handlers.ProductsHandler, "GET")
+	app.Handle("/cart/$", handlers.CartHandler, "POST")
+	app.Handle("/add-to-cart/$", handlers.AddItemCartHandler, "PUT")
 
 	fmt.Println("Running Application on port:" + port)
 	err := http.ListenAndServe(portNumber, app)

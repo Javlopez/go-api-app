@@ -29,12 +29,26 @@ func TestApplicationHandlers(t *testing.T) {
 		}
 	})
 
+	t.Run("Handler should accept only methods allowed", func(t *testing.T) {
+		a := app.New()
+		req := httptest.NewRequest("POST", "/products/", nil)
+		rr := httptest.NewRecorder()
+
+		a.Handle("/products/", handlers.ProductsHandler, "GET")
+
+		a.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusMethodNotAllowed {
+			t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusMethodNotAllowed, status)
+		}
+	})
+
 	t.Run("Handler should show sucess when the handler does exists", func(t *testing.T) {
 		a := app.New()
 		req := httptest.NewRequest("GET", "/products/", nil)
 		rr := httptest.NewRecorder()
 
-		a.Handle("/products/", handlers.ProductsHandler)
+		a.Handle("/products/", handlers.ProductsHandler, "GET")
 
 		a.ServeHTTP(rr, req)
 
@@ -48,7 +62,7 @@ func TestApplicationHandlers(t *testing.T) {
 		req := httptest.NewRequest("GET", "/products/PEN", nil)
 		rr := httptest.NewRecorder()
 
-		a.Handle("/products/([A-Z]+)$", handlers.ProductHandler)
+		a.Handle("/products/([A-Z]+)$", handlers.ProductHandler, "GET")
 
 		a.ServeHTTP(rr, req)
 

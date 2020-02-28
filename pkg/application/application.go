@@ -2,8 +2,8 @@ package application
 
 import (
 	"encoding/json"
-	"fmt"
-	"go-lana/pkg/infrastructure"
+	"go-lana/pkg/infra"
+	jsonResponse "go-lana/pkg/response/json"
 	"net/http"
 	"regexp"
 )
@@ -14,11 +14,12 @@ const (
 	ContentTypeJSON = "application/json"
 )
 
-type Handler func(*ApplicationContext, http.ResponseWriter, *http.Request) (int, interface{})
+type Handler func(*ApplicationContext, http.ResponseWriter, *http.Request) *jsonResponse.Response
 
 type Route struct {
 	Pattern *regexp.Regexp
 	Handler Handler
+	Methods []string
 }
 
 type Context struct {
@@ -29,9 +30,10 @@ type Context struct {
 //ApplicationContext struct
 type ApplicationContext struct {
 	Version   string
-	Container infrastructure.Container
+	Container infra.Container
 	Routes    []Route
 	Params    []string
+	Context   *Context
 }
 
 //New
@@ -41,41 +43,56 @@ func New() *ApplicationContext {
 	}
 }
 
-func (ac *ApplicationContext) Handle(pattern string, handler Handler) {
+//Handle method
+func (ac *ApplicationContext) Handle(pattern string, handler Handler, methods ...string) {
 	re := regexp.MustCompile(pattern)
-	route := Route{Pattern: re, Handler: handler}
+	route := Route{Pattern: re, Handler: handler, Methods: methods}
 	ac.Routes = append(ac.Routes, route)
 }
 
 func (ah ApplicationContext) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	statusCode, data := ah.dispatch(w, r)
+	output := make(map[string]interface{})
+
+	ah.Context = &Context{Request: r, ResponseWriter: w}
+	resp := ah.dispatch(w, r)
 	w.Header().Set("Content-Type", ContentTypeJSON)
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(data)
+	w.WriteHeader(resp.Code)
+
+	if resp.Success {
+		output["data"] = resp.Data
+	} else {
+		output["error"] = resp.Data
+	}
+
+	json.NewEncoder(w).Encode(output)
 	return
 }
 
-func (ah ApplicationContext) dispatch(w http.ResponseWriter, r *http.Request) (int, interface{}) {
-	ctx := &Context{Request: r, ResponseWriter: w}
-
-	var statusCode = 200
-	var data interface{}
+func (ah ApplicationContext) dispatch(w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
+	ctx := ah.Context
 
 	for _, rt := range ah.Routes {
 		if matches := rt.Pattern.FindStringSubmatch(ctx.URL.Path); len(matches) > 0 {
+
+			if !ah.MethodIsAllowed(rt.Methods, ctx.Method) {
+				return jsonResponse.NewErrorResponse(http.StatusMethodNotAllowed, "Method Not Allowed")
+			}
+
 			if len(matches) > 1 {
 				ah.Params = matches[1:]
 			}
-			statusCode, data = rt.Handler(&ah, w, r)
-			return statusCode, data
+			return rt.Handler(&ah, w, r)
 		}
 	}
 
-	fmt.Printf("data: %#v", data)
+	return jsonResponse.NewErrorResponse(http.StatusNotFound, "Url not found")
+}
 
-	if data == nil {
-		data = struct{ Response string }{Response: "Not found"}
-		statusCode = http.StatusNotFound
+func (ah ApplicationContext) MethodIsAllowed(methods []string, method string) bool {
+	for _, methodAllowed := range methods {
+		if methodAllowed == method {
+			return true
+		}
 	}
-	return statusCode, data
+	return false
 }
