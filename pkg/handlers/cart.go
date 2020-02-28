@@ -12,9 +12,9 @@ import (
 
 //CartHandler method
 func CartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
-
+	a.Lock()
 	cart := a.Container.CartService().CreateCart()
-
+	a.Unlock()
 	return jsonResponse.NewSuccessResponse(http.StatusCreated, cart)
 }
 
@@ -35,7 +35,9 @@ func GetCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Re
 		return jsonResponse.NewErrorResponse(http.StatusBadRequest, err.Error())
 	}
 
+	a.RLock()
 	cart, err := a.Container.CartService().GetCart(cartReader.Cart)
+	a.RUnlock()
 	if err != nil {
 		log.Printf(err.Error())
 		erroGetCart := errors.New("The cart does not exists")
@@ -65,7 +67,9 @@ func AddItemCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *htt
 		return jsonResponse.NewErrorResponse(http.StatusBadRequest, err.Error())
 	}
 
+	a.Lock()
 	cart, err := a.Container.CartService().AddItem(cartReader.Cart, cartReader.Items)
+	a.Unlock()
 
 	if err != nil {
 		log.Printf(err.Error())
@@ -93,7 +97,9 @@ func DeleteCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http
 		return jsonResponse.NewErrorResponse(http.StatusBadRequest, err.Error())
 	}
 
+	a.Lock()
 	err = a.Container.CartService().DeleteCart(cartReader.Cart)
+	a.Unlock()
 
 	if err != nil {
 		log.Printf(err.Error())

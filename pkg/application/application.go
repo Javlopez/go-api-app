@@ -6,6 +6,7 @@ import (
 	jsonResponse "go-lana/pkg/response/json"
 	"net/http"
 	"regexp"
+	"sync"
 )
 
 const (
@@ -29,6 +30,7 @@ type Context struct {
 
 //ApplicationContext struct
 type ApplicationContext struct {
+	sync.RWMutex
 	Version   string
 	Container infra.Container
 	Routes    []Route
