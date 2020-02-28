@@ -1,8 +1,10 @@
 package domain
 
 type Cart struct {
-	UUID     string
-	Products []Product
+	UUID       string
+	Products   []Product
+	Total      float32 `json:"-"`
+	TotalPrice string  `json:"TotalPrice"`
 }
 
 type CartRepository interface {

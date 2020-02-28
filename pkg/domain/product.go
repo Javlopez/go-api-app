@@ -2,9 +2,10 @@ package domain
 
 //Product struct
 type Product struct {
-	Code  string
-	Name  string
-	Price float32
+	Code        string
+	Name        string
+	Price       float32 `json:"-"`
+	PriceFormat string  `json:"price"`
 }
 
 //ProductRepository repository

@@ -86,13 +86,13 @@ func TestCart(t *testing.T) {
 		want := &domain.Cart{
 			UUID: "11E5C5D2-B56B-B588-57F9-8F77A05FEEE8",
 			Products: []domain.Product{
-				domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00},
+				domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00, PriceFormat: "20.00€"},
 			},
 		}
 
 		cartRepo.On("UpdateCart", want.UUID, []string{"PEN"}).Return(want, nil)
 
-		wantProduct := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00}
+		wantProduct := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00, PriceFormat: "20.00€"}
 		productRepo := ProductRepositoryMock{}
 		productRepo.On("GetProductByCode", "PEN").Return(wantProduct, nil)
 
@@ -114,7 +114,7 @@ func TestCart(t *testing.T) {
 		want := &domain.Cart{
 			UUID: "11E5C5D2-B56B-B588-57F9-8F77A05FEEE8",
 			Products: []domain.Product{
-				domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00},
+				domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00, PriceFormat: "20.00€"},
 			},
 		}
 
@@ -123,7 +123,7 @@ func TestCart(t *testing.T) {
 		cartRepo.On("CreateCart").Return(domain.Cart{UUID: "11E5C5D2-B56B-B588-57F9-8F77A05FEEE8"})
 		cartRepo.On("UpdateCart", want.UUID, []string{"PEN"}).Return(want)
 
-		wantProduct := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00}
+		wantProduct := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00, PriceFormat: "20.00€"}
 		productRepo := ProductRepositoryMock{}
 		productRepo.On("GetProductByCode", "PEN").Return(wantProduct)
 

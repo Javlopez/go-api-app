@@ -18,6 +18,7 @@ func main() {
 	app.Handle("/products/([A-Z]+)$", handlers.ProductHandler, "GET")
 	app.Handle("/products/$", handlers.ProductsHandler, "GET")
 	app.Handle("/cart/$", handlers.CartHandler, "POST")
+	app.Handle("/get-cart/$", handlers.GetCartHandler, "GET")
 	app.Handle("/add-to-cart/$", handlers.AddItemCartHandler, "PUT")
 	app.Handle("/delete-cart/$", handlers.DeleteCartHandler, "DELETE")
 

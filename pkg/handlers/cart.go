@@ -18,6 +18,34 @@ func CartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Reque
 	return jsonResponse.NewSuccessResponse(http.StatusCreated, cart)
 }
 
+func GetCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
+	var cartReader struct {
+		Cart string
+	}
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf(err.Error())
+		return jsonResponse.NewErrorResponse(http.StatusBadRequest, err.Error())
+	}
+
+	err = json.Unmarshal(reqBody, &cartReader)
+	if err != nil {
+		log.Printf(err.Error())
+		return jsonResponse.NewErrorResponse(http.StatusBadRequest, err.Error())
+	}
+
+	cart, err := a.Container.CartService().GetCart(cartReader.Cart)
+	if err != nil {
+		log.Printf(err.Error())
+		erroGetCart := errors.New("The cart does not exists")
+
+		return jsonResponse.NewErrorResponse(http.StatusInternalServerError, erroGetCart.Error())
+	}
+
+	return jsonResponse.NewSuccessResponse(http.StatusOK, cart)
+}
+
 func AddItemCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
 
 	var cartReader struct {

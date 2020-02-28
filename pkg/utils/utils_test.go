@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"log"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUUIDGenerator(t *testing.T) {
@@ -15,4 +16,15 @@ func TestUUIDGenerator(t *testing.T) {
 
 	assert.NotEmpty(t, uuid)
 	assert.Equal(t, 36, len(uuid))
+}
+
+func TestPriceFromater(t *testing.T) {
+
+	got := FormatPrice(95.0)
+	want := "95.00€"
+	assert.Equal(t, got, want)
+
+	got = FormatPrice(95.05)
+	want = "95.05€"
+	assert.Equal(t, got, want)
 }

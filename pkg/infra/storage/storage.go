@@ -30,7 +30,7 @@ func (ls *LocalStorage) Save(name, content string) error {
 	filePath := ls.GetFilePath(name)
 	err := ioutil.WriteFile(filePath, []byte(content), filePerm)
 	if err != nil {
-		log.Fatalf("The file %s cannot be saved due: %s", filePath, err.Error())
+		log.Printf("The file %s cannot be saved due: %s", filePath, err.Error())
 		return err
 	}
 	return nil
@@ -41,7 +41,7 @@ func (ls *LocalStorage) Get(name string) (string, error) {
 	filePath := ls.GetFilePath(name)
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Fatalf("The file %s cannot be readed due: %s", filePath, err.Error())
+		log.Printf("The file %s cannot be readed due: %s", filePath, err.Error())
 		return "", err
 	}
 	return string(data), nil
