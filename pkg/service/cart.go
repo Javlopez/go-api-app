@@ -33,3 +33,7 @@ func (cs *CartService) AddItem(cartName string, items []string) (*domain.Cart, e
 func (cs *CartService) GetCart(cart string) (*domain.Cart, error) {
 	return cs.CartRepo.GetCart(cart)
 }
+
+func (cs *CartService) DeleteCart(cart string) error {
+	return cs.CartRepo.DeleteCart(cart)
+}

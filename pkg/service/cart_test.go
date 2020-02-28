@@ -9,7 +9,10 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-var cartExists = true
+var (
+	cartExists = true
+	fileExists = true
+)
 
 type CartRepositoryMock struct {
 	mock.Mock
@@ -34,6 +37,13 @@ func (cm *CartRepositoryMock) GetCart(name string) (*domain.Cart, error) {
 
 func (cm *CartRepositoryMock) UpdateCart(cart *domain.Cart) (*domain.Cart, error) {
 	return cart, nil
+}
+
+func (cm *CartRepositoryMock) DeleteCart(cartName string) error {
+	if fileExists {
+		return nil
+	}
+	return errors.New("remove storage/11E5C5D2-B56B-B588-57F9-8F77A05FEEE8: no such file or directory")
 }
 
 func TestCart(t *testing.T) {
@@ -115,7 +125,7 @@ func TestCart(t *testing.T) {
 
 		wantProduct := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00}
 		productRepo := ProductRepositoryMock{}
-		productRepo.On("GetProductByCode", "PEN").Return(wantProduct, nil)
+		productRepo.On("GetProductByCode", "PEN").Return(wantProduct)
 
 		cartSvc := &CartService{CartRepo: &cartRepo, ProductRepo: &productRepo}
 
@@ -127,5 +137,37 @@ func TestCart(t *testing.T) {
 
 		assert.Equal(t, want.UUID, cartExists.UUID)
 		assert.Equal(t, want.Products, cartExists.Products)
+	})
+
+	t.Run("Cart service should be able to delete any cart", func(t *testing.T) {
+		cartRepo := CartRepositoryMock{}
+		cartExists = false
+		cartUUID := "11E5C5D2-B56B-B588-57F9-8F77A05FEEE8"
+		cartRepo.On("DeleteCart", cartUUID).Return(nil)
+		wantCart := &domain.Cart{}
+		cartRepo.
+			On("GetCart", cartUUID).
+			Return(wantCart, errors.New("The cart does not exists"))
+
+		cartSvc := &CartService{CartRepo: &cartRepo}
+		err := cartSvc.DeleteCart(cartUUID)
+		assert.Equal(t, nil, err)
+	})
+
+	t.Run("Cart service should show an error when we try to delete a not existent cart file", func(t *testing.T) {
+		cartRepo := CartRepositoryMock{}
+		fileExists = false
+		cartExists = false
+		cartUUID := "11E5C5D2-B56B-B588-57F9-8F77A05FEEE8"
+		want := errors.New("remove storage/11E5C5D2-B56B-B588-57F9-8F77A05FEEE8: no such file or directory")
+		cartRepo.On("DeleteCart", cartUUID).Return(want)
+		wantCart := &domain.Cart{}
+		cartRepo.
+			On("GetCart", cartUUID).
+			Return(wantCart, errors.New("The cart does not exists"))
+
+		cartSvc := &CartService{CartRepo: &cartRepo}
+		err := cartSvc.DeleteCart(cartUUID)
+		assert.Equal(t, want, err)
 	})
 }

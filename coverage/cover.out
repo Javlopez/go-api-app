@@ -1,16 +1,4 @@
 mode: set
-go-lana/pkg/utils/utils.go:9.37,12.16 3 1
-go-lana/pkg/utils/utils.go:16.2,16.84 1 1
-go-lana/pkg/utils/utils.go:12.16,14.3 1 0
-go-lana/pkg/service/cart.go:12.50,14.2 1 1
-go-lana/pkg/service/cart.go:16.87,21.16 3 1
-go-lana/pkg/service/cart.go:25.2,25.29 1 1
-go-lana/pkg/service/cart.go:30.2,30.37 1 1
-go-lana/pkg/service/cart.go:21.16,23.3 1 1
-go-lana/pkg/service/cart.go:25.29,28.3 2 1
-go-lana/pkg/service/cart.go:33.67,35.2 1 1
-go-lana/pkg/service/product.go:11.61,13.2 1 1
-go-lana/pkg/service/product.go:16.80,18.2 1 1
 go-lana/pkg/application/application.go:40.32,44.2 1 1
 go-lana/pkg/application/application.go:47.90,51.2 3 1
 go-lana/pkg/application/application.go:53.80,61.18 6 1
@@ -29,3 +17,16 @@ go-lana/pkg/application/application.go:91.84,92.40 1 1
 go-lana/pkg/application/application.go:97.2,97.14 1 1
 go-lana/pkg/application/application.go:92.40,93.30 1 1
 go-lana/pkg/application/application.go:93.30,95.4 1 1
+go-lana/pkg/utils/utils.go:9.37,12.16 3 1
+go-lana/pkg/utils/utils.go:16.2,16.84 1 1
+go-lana/pkg/utils/utils.go:12.16,14.3 1 0
+go-lana/pkg/service/cart.go:12.50,14.2 1 1
+go-lana/pkg/service/cart.go:16.87,21.16 3 1
+go-lana/pkg/service/cart.go:25.2,25.29 1 1
+go-lana/pkg/service/cart.go:30.2,30.37 1 1
+go-lana/pkg/service/cart.go:21.16,23.3 1 1
+go-lana/pkg/service/cart.go:25.29,28.3 2 1
+go-lana/pkg/service/cart.go:33.67,35.2 1 1
+go-lana/pkg/service/cart.go:37.54,39.2 1 1
+go-lana/pkg/service/product.go:11.61,13.2 1 1
+go-lana/pkg/service/product.go:16.80,18.2 1 1

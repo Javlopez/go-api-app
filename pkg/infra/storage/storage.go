@@ -3,6 +3,7 @@ package storage
 import (
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 const (
@@ -44,4 +45,13 @@ func (ls *LocalStorage) Get(name string) (string, error) {
 		return "", err
 	}
 	return string(data), nil
+}
+
+func (ls *LocalStorage) Delete(name string) error {
+	filePath := ls.GetFilePath(name)
+	err := os.Remove(filePath)
+	if err != nil {
+		return err
+	}
+	return nil
 }

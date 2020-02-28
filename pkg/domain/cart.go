@@ -8,6 +8,6 @@ type Cart struct {
 type CartRepository interface {
 	CreateCart() *Cart
 	UpdateCart(cart *Cart) (*Cart, error)
-	//DeleteItem(product Product)
+	DeleteCart(cart string) error
 	GetCart(cart string) (*Cart, error)
 }

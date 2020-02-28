@@ -43,3 +43,7 @@ func (cr *CartRepository) GetCart(name string) (*domain.Cart, error) {
 
 	return cart, nil
 }
+
+func (cr *CartRepository) DeleteCart(cartName string) error {
+	return cr.LocalStorage.Delete(cartName)
+}

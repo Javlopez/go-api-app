@@ -19,6 +19,7 @@ func main() {
 	app.Handle("/products/$", handlers.ProductsHandler, "GET")
 	app.Handle("/cart/$", handlers.CartHandler, "POST")
 	app.Handle("/add-to-cart/$", handlers.AddItemCartHandler, "PUT")
+	app.Handle("/delete-cart/$", handlers.DeleteCartHandler, "DELETE")
 
 	fmt.Println("Running Application on port:" + port)
 	err := http.ListenAndServe(portNumber, app)
