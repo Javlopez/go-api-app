@@ -14,10 +14,9 @@ var products = []domain.Product{
 
 var ProductNotFound = errors.New("The product does not exists")
 
-type ProductRepository struct {
-}
+type ProductRepository struct{}
 
-//All method
+//All method returns all the products
 func (pr *ProductRepository) All() ([]domain.Product, error) {
 	return products, nil
 }

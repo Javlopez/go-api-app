@@ -1,8 +1,9 @@
 package service
 
-import "go-lana/pkg/domain"
-
-import "fmt"
+import (
+	"go-lana/pkg/domain"
+	"go-lana/pkg/utils"
+)
 
 //ProductService struct
 type ProductService struct {
@@ -21,7 +22,7 @@ func (p *ProductService) GetAll() ([]domain.Product, error) {
 	}
 
 	for _, product := range products {
-		product.PriceFormat = fmt.Sprintf("%0.02f€", product.Price)
+		product.PriceFormat = utils.FormatPrice(product.Price)
 		productsFormated = append(productsFormated, product)
 	}
 	return productsFormated, nil
@@ -29,5 +30,10 @@ func (p *ProductService) GetAll() ([]domain.Product, error) {
 
 //GetProductByCode method
 func (p *ProductService) GetProductByCode(code string) (domain.Product, error) {
-	return p.ProductRepo.GetProductByCode(code)
+	prod, err := p.ProductRepo.GetProductByCode(code)
+	if err != nil {
+		return prod, err
+	}
+	prod.PriceFormat = utils.FormatPrice(prod.Price)
+	return prod, nil
 }

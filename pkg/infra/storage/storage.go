@@ -17,8 +17,8 @@ type Storage interface {
 	Get(name string) (string, error)
 }
 
-type LocalStorage struct {
-}
+//LocalStorage struct is a struct to keep to dispatch methods that works directly with files
+type LocalStorage struct{}
 
 //GetFilePath method: gives the file path with desationation path
 func (ls *LocalStorage) GetFilePath(name string) string {
@@ -47,6 +47,7 @@ func (ls *LocalStorage) Get(name string) (string, error) {
 	return string(data), nil
 }
 
+//Delete method: is to delete a file
 func (ls *LocalStorage) Delete(name string) error {
 	filePath := ls.GetFilePath(name)
 	err := os.Remove(filePath)

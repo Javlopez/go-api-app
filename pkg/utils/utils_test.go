@@ -18,7 +18,7 @@ func TestUUIDGenerator(t *testing.T) {
 	assert.Equal(t, 36, len(uuid))
 }
 
-func TestPriceFromater(t *testing.T) {
+func TestPriceFormater(t *testing.T) {
 
 	got := FormatPrice(95.0)
 	want := "95.00€"

@@ -13,13 +13,12 @@ type CartService struct {
 
 func (cs *CartService) CreateCart() *domain.Cart {
 	cs.Cart = cs.CartRepo.CreateCart()
-	return cs.Cart
+	return cs.CalculateTotalPrice().Cart
 }
 
 func (cs *CartService) AddItem(cartName string, items []string) (*domain.Cart, error) {
 	var cart *domain.Cart
-
-	cart, err := cs.CartRepo.GetCart(cartName)
+	cart, err := cs.GetCart(cartName)
 
 	if err != nil {
 		cart = cs.CreateCart()
@@ -40,7 +39,7 @@ func (cs *CartService) AddItem(cartName string, items []string) (*domain.Cart, e
 	}
 
 	cs.Cart = cartUpdated
-	cs.CalculateTotalPrice()
+	cs.Cart = cs.CalculateTotalPrice().Cart
 
 	return cs.Cart, nil
 }
@@ -73,10 +72,24 @@ func (cs *CartService) CalculateTotalPrice() *CartService {
 }
 
 func (cs *CartService) GetCart(cartName string) (*domain.Cart, error) {
+
+	items := []domain.Product{}
+
 	cart, err := cs.CartRepo.GetCart(cartName)
 	if err != nil {
 		return cart, err
 	}
+
+	for _, item := range cart.Products {
+		product, err := cs.ProductRepo.GetProductByCode(item.Code)
+		product.PriceFormat = utils.FormatPrice(product.Price)
+		if err != nil {
+			return cart, err
+		}
+		items = append(items, product)
+	}
+
+	cart.Products = items
 	cs.Cart = cart
 	cs.CalculateTotalPrice()
 	return cs.Cart, nil

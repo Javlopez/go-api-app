@@ -1,10 +1,11 @@
 package service
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"go-lana/pkg/domain"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 type ProductRepositoryMock struct {
@@ -43,7 +44,7 @@ func TestProducts(t *testing.T) {
 	})
 
 	t.Run("Get product by code", func(t *testing.T) {
-		want := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00}
+		want := domain.Product{Code: "TSHIRT", Name: "Lana T-Shirt", Price: 20.00, PriceFormat: "20.00€"}
 		productRepo := ProductRepositoryMock{}
 		productRepo.On("GetProductByCode").Return(want, nil)
 
@@ -51,6 +52,6 @@ func TestProducts(t *testing.T) {
 
 		got, _ := u.GetProductByCode("TSHIRT")
 
-		assert.Equal(t, got, want)
+		assert.Equal(t, want, got)
 	})
 }

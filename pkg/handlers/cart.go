@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-//CartHandler method
+//CartHandler method to creates a new Cart, the cart will contains an UUID as identifier
 func CartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
 	a.Lock()
 	cart := a.Container.CartService().CreateCart()
@@ -18,6 +18,7 @@ func CartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Reque
 	return jsonResponse.NewSuccessResponse(http.StatusCreated, cart)
 }
 
+//GetCartHandler method is to get a cart using UUID
 func GetCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
 	var cartReader struct {
 		Cart string
@@ -48,6 +49,7 @@ func GetCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Re
 	return jsonResponse.NewSuccessResponse(http.StatusOK, cart)
 }
 
+//AddItemCartHandler method is to add items into a cart,if the cart doesn't exists a new cart will be made
 func AddItemCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
 
 	var cartReader struct {
@@ -78,7 +80,7 @@ func AddItemCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *htt
 	return jsonResponse.NewSuccessResponse(http.StatusOK, cart)
 }
 
-//DeleteCartHandler method
+//DeleteCartHandler method is to delete the cart (Hard delete)
 func DeleteCartHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
 
 	var cartReader struct {

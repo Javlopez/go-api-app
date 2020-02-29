@@ -3,8 +3,10 @@ package application_test
 import (
 	app "go-lana/pkg/application"
 	"go-lana/pkg/handlers"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"testing"
 )
 
@@ -14,6 +16,26 @@ func FakeHandler(a *app.ApplicationContext, w http.ResponseWriter, r *http.Reque
 
 func FakeHandlerFail(a *app.ApplicationContext, w http.ResponseWriter, r *http.Request) (int, interface{}) {
 	return 404, nil
+}
+
+// The application app is able to dispatch any handler by using Handle() method
+// also it can manage any method
+func Example_app() {
+	ap := app.New()
+	ap.Handle("/endpoint/([A-Z]+)$", handlers.ProductHandler, "GET", "POST", "PUT")
+	err := http.ListenAndServe(":8000", ap)
+	if err != nil {
+		log.Fatalf("Could not start server: %s\n", err.Error())
+	}
+}
+
+func Example_route() {
+	var routes []app.Route
+	pattern := "/endpoint/"
+	methods := []string{"GET", "POST", "PUT"}
+	re := regexp.MustCompile(pattern)
+	route := app.Route{Pattern: re, Handler: handlers.ProductHandler, Methods: methods}
+	routes = append(routes, route)
 }
 
 func TestApplicationHandlers(t *testing.T) {

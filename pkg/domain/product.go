@@ -5,7 +5,7 @@ type Product struct {
 	Code        string
 	Name        string
 	Price       float32 `json:"-"`
-	PriceFormat string  `json:"price"`
+	PriceFormat string  `json:"Price"`
 }
 
 //ProductRepository repository

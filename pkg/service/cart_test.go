@@ -78,7 +78,7 @@ func TestCart(t *testing.T) {
 
 		assert.NotEmpty(t, cartExists.UUID)
 		assert.Equal(t, want.UUID, cartExists.UUID)
-		assert.Nil(t, cartExists.Products)
+		assert.Equal(t, []domain.Product{}, cartExists.Products)
 	})
 
 	t.Run("Cart service should be able to add items in a cart", func(t *testing.T) {

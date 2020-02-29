@@ -1,3 +1,4 @@
+//Package application is to manage the application state, transform handler is routes and executer them as server
 package application
 
 import (
@@ -10,25 +11,29 @@ import (
 )
 
 const (
-	//Version 1.0 beta
-	Version         = "1.0"
+	//Version of application
+	Version = "1.0"
+	//ContentTypeJSON The application for now only is able to response JSON content
 	ContentTypeJSON = "application/json"
 )
 
+//Handler is a type able to manage custom handler keeping http.ResponseWriter, *http.Request
 type Handler func(*ApplicationContext, http.ResponseWriter, *http.Request) *jsonResponse.Response
 
+//Route is a struct to manage each handler
 type Route struct {
 	Pattern *regexp.Regexp
 	Handler Handler
 	Methods []string
 }
 
+//Context is a struct to manage the context
 type Context struct {
 	http.ResponseWriter
 	*http.Request
 }
 
-//ApplicationContext struct
+//ApplicationContext struct for manbage the application state
 type ApplicationContext struct {
 	sync.RWMutex
 	Version   string
@@ -38,25 +43,26 @@ type ApplicationContext struct {
 	Context   *Context
 }
 
-//New
+//New this function instanciates a new ApplicationContext
 func New() *ApplicationContext {
 	return &ApplicationContext{
 		Version: Version,
 	}
 }
 
-//Handle method
+//Handle method is to create routes from handlers
 func (ac *ApplicationContext) Handle(pattern string, handler Handler, methods ...string) {
 	re := regexp.MustCompile(pattern)
 	route := Route{Pattern: re, Handler: handler, Methods: methods}
 	ac.Routes = append(ac.Routes, route)
 }
 
-func (ah ApplicationContext) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+//ServeHTTP method is to make the application able to create a server
+func (ac *ApplicationContext) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
-	ah.Context = &Context{Request: r, ResponseWriter: w}
-	resp := ah.dispatch(w, r)
+	ac.Context = &Context{Request: r, ResponseWriter: w}
+	resp := ac.Dispatch(w, r)
 	w.Header().Set("Content-Type", ContentTypeJSON)
 	w.WriteHeader(resp.Code)
 
@@ -70,27 +76,29 @@ func (ah ApplicationContext) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (ah ApplicationContext) dispatch(w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
-	ctx := ah.Context
+//Dispatch method is to validate and execute the handler is it exists otherwise will be returned an 404 error
+func (ac *ApplicationContext) Dispatch(w http.ResponseWriter, r *http.Request) *jsonResponse.Response {
+	ctx := ac.Context
 
-	for _, rt := range ah.Routes {
+	for _, rt := range ac.Routes {
 		if matches := rt.Pattern.FindStringSubmatch(ctx.URL.Path); len(matches) > 0 {
 
-			if !ah.MethodIsAllowed(rt.Methods, ctx.Method) {
+			if !ac.MethodIsAllowed(rt.Methods, ctx.Method) {
 				return jsonResponse.NewErrorResponse(http.StatusMethodNotAllowed, "Method Not Allowed")
 			}
 
 			if len(matches) > 1 {
-				ah.Params = matches[1:]
+				ac.Params = matches[1:]
 			}
-			return rt.Handler(&ah, w, r)
+			return rt.Handler(ac, w, r)
 		}
 	}
 
 	return jsonResponse.NewErrorResponse(http.StatusNotFound, "Url not found")
 }
 
-func (ah ApplicationContext) MethodIsAllowed(methods []string, method string) bool {
+//MethodIsAllowed validates is the method used by the request is allowed or not
+func (ac *ApplicationContext) MethodIsAllowed(methods []string, method string) bool {
 	for _, methodAllowed := range methods {
 		if methodAllowed == method {
 			return true

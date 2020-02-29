@@ -15,7 +15,7 @@ type Promotional interface {
 }
 
 type Promotion struct {
-	Items int
+	Items []domain.Product
 	Price float32
 }
 
@@ -24,10 +24,11 @@ type PromotionForPEN struct {
 }
 
 func (p *PromotionForPEN) ApplyPromotion() float32 {
-	if p.Items == 0 {
+
+	if len(p.Items) == 0 {
 		return 0.00
 	}
-	q := math.Ceil(float64(p.Items) / 2)
+	q := math.Ceil(float64(len(p.Items)) / 2)
 	return float32(q) * p.Price
 }
 
@@ -36,14 +37,14 @@ type PromotionForTshirt struct {
 }
 
 func (p *PromotionForTshirt) ApplyPromotion() float32 {
-	if p.Items == 0 {
+	if len(p.Items) == 0 {
 		return 0.00
 	}
 
-	totalPrice := float32(p.Items) * p.Price
+	totalPrice := float32(len(p.Items)) * p.Price
 
-	if p.Items >= MIN_ITEMS {
-		totalPrice = float32(p.Items) * (p.Price - (p.Price * DISCOUNT))
+	if len(p.Items) >= MIN_ITEMS {
+		totalPrice = float32(len(p.Items)) * (p.Price - (p.Price * DISCOUNT))
 	}
 	return float32(totalPrice)
 }
@@ -53,18 +54,18 @@ type PromotionForMugs struct {
 }
 
 func (p *PromotionForMugs) ApplyPromotion() float32 {
-	if p.Items == 0 {
+	if len(p.Items) == 0 {
 		return 0.00
 	}
 
-	totalPrice := float32(p.Items) * p.Price
+	totalPrice := float32(len(p.Items)) * p.Price
 
 	return float32(totalPrice)
 }
 
 func newPromo(products []domain.Product) Promotion {
 	p := Promotion{
-		Items: len(products),
+		Items: products,
 	}
 
 	if len(products) > 0 {

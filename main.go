@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go-lana/pkg/application"
 	"go-lana/pkg/handlers"
@@ -8,12 +9,15 @@ import (
 	"net/http"
 )
 
-const port = "8081"
+const defaultPort = "8080"
 
 func main() {
 
 	app := application.New()
-	portNumber := fmt.Sprintf(":%s", port)
+	port := flag.String("port", defaultPort, "Set port for run application")
+	flag.Parse()
+
+	portNumber := fmt.Sprintf(":%s", *port)
 
 	app.Handle("/products/([A-Z]+)$", handlers.ProductHandler, "GET")
 	app.Handle("/products/$", handlers.ProductsHandler, "GET")
@@ -22,7 +26,7 @@ func main() {
 	app.Handle("/add-to-cart/$", handlers.AddItemCartHandler, "PUT")
 	app.Handle("/delete-cart/$", handlers.DeleteCartHandler, "DELETE")
 
-	fmt.Println("Running Application on port:" + port)
+	fmt.Println("Running Application on port" + portNumber)
 	err := http.ListenAndServe(portNumber, app)
 	if err != nil {
 		log.Fatalf("Could not start server: %s\n", err.Error())
